@@ -22,6 +22,15 @@ public enum TruckStatusType {
 		}
 		throw new EnumerationException(id, TruckStatusType.class.getName());
 	}
+	
+	public static TruckStatusType fromValue(String value) {
+		for (TruckStatusType truckStatusType : TruckStatusType.values()) {
+			if (truckStatusType.getValue().equals(value)) {
+				return truckStatusType;
+			}
+		}
+		throw new EnumerationException(value, TruckStatusType.class.getName());
+	}
 
 	public long getId() {
 		return id;

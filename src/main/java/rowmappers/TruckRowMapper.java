@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.perry.domain.truck.Truck;
+import com.perry.domain.truck.TruckStatusType;
 
 public class TruckRowMapper implements RowMapper<Truck> {
 
@@ -22,6 +23,7 @@ public class TruckRowMapper implements RowMapper<Truck> {
 		truck.setDriverLastName(rs.getString("driver_last_name"));
 		truck.setGisLatitude(rs.getString("gis_latitude"));
 		truck.setGisLongitude(rs.getString("gis_longitude"));
+		truck.setTruckStatusType(TruckStatusType.fromValue(rs.getString("status")));
 
 		return truck;
 	}
