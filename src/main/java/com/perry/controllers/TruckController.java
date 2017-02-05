@@ -41,14 +41,19 @@ public class TruckController {
 		List<Truck> truckList = truckDomainService.getAll();
 		return truckList;
 	}
-	
+
+	@RequestMapping(value = "/available", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	public List<Truck> getAvailableTrucks() {
+		List<Truck> truckList = truckDomainService.getAvailable();
+		return truckList;
+	}
+
 	@RequestMapping(value = "/ids", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public List<TruckId> getAllTruckIds() {
 		List<TruckId> ids = new ArrayList<>();
 		List<Truck> truckList = truckDomainService.getAll();
-		truckList.stream().forEach(truck -> ids.add(new TruckId(truck.getId(),truck.getIdentifier())));
+		truckList.stream().forEach(truck -> ids.add(new TruckId(truck.getId(), truck.getIdentifier())));
 		return ids;
 	}
-	
 
 }

@@ -14,7 +14,7 @@ public class Call extends Persisted {
 
 	private CallType callType;
 
-	private String truckId;
+	private long truckId;
 
 	private TowTruckType towTruckType;
 
@@ -22,7 +22,7 @@ public class Call extends Persisted {
 		// Default Constructor
 	}
 
-	public Call(Customer customer, String pickUpLocation, String dropOffLocation, CallType callType, String truckId, TowTruckType towTruckType) {
+	public Call(Customer customer, String pickUpLocation, String dropOffLocation, CallType callType, long truckId, TowTruckType towTruckType) {
 		super();
 		this.customer = customer;
 		this.pickUpLocation = pickUpLocation;
@@ -64,12 +64,12 @@ public class Call extends Persisted {
 		this.callType = callType;
 	}
 
-	public void setTruckId(String truckId) {
-		this.truckId = truckId;
+	public long getTruckId() {
+		return truckId;
 	}
 
-	public String getTruckId() {
-		return truckId;
+	public void setTruckId(long truckId) {
+		this.truckId = truckId;
 	}
 
 	public TowTruckType getTowTruckType() {

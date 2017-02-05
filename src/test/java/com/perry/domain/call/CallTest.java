@@ -25,7 +25,7 @@ public class CallTest {
 		String pickUpLocation = "Pick Up Location";
 		String dropOffLocation = "Drop Off Location";
 		CallType callType = CallType.IMPOUND;
-		String truckId = "1k8";
+		long truckId = 1;
 		TowTruckType requiredTruckType = TowTruckType.FIRST_AVAILABLE;
 
 		Call call = new Call(customer, pickUpLocation, dropOffLocation, callType, truckId, requiredTruckType);
@@ -57,19 +57,11 @@ public class CallTest {
 		customer.setPhoneNumber("1-238-722-9888");
 		customer.setVehicle(vehicle);
 		CallType callType = CallType.IMPOUND;
-		String truckId = "1k8";
+		long truckId = 1;
 		TowTruckType towTruckType = TowTruckType.FIRST_AVAILABLE;
 
 		Call call = new Call(customer, pickUpLocation, dropOffLocation, callType, truckId, towTruckType);
 		ObjectMapper mapper = new ObjectMapper();
-		System.out.println(mapper.writeValueAsString(call));
-	}
-
-	@Test
-	public void parseJson() throws JsonParseException, JsonMappingException, IOException {
-		String json = "{\"customer\":{\"firstName\":\"1\",\"lastName\":\"2\",\"phoneNumber\":\"3\",\"priceQuote\":\"4\",\"vehicle\":{\"keyLocationType\":\"1\",\"make\":\"7\",\"model\":\"9\",\"year\":\"8\",\"color\":\"10\",\"licensePlateNumber\":\"19\"},\"towTruckType\":\"1\"},\"callType\":\"1\",\"pickUpLocation\":\"5\",\"dropOffLocation\":\"6\",\"id\":\"\"}";
-		ObjectMapper mapper = new ObjectMapper();
-		Call call = mapper.readValue(json, Call.class);
 		System.out.println(mapper.writeValueAsString(call));
 	}
 

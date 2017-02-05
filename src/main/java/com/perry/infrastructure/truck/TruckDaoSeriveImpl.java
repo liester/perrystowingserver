@@ -1,8 +1,12 @@
 package com.perry.infrastructure.truck;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -11,9 +15,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.perry.domain.truck.Truck;
+import com.perry.infrastructure.call.CallDaoService;
 
 import rowmappers.TruckRowMapper;
 
@@ -23,6 +26,9 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 	@Inject
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	@Inject
+	private CallDaoService callDaoService;
+
 	@Override
 	public List<Truck> getByIds(List<Long> truckIds) {
 		String sql = "select * from trucks t where t.truck_id in (:truckIds)";
@@ -31,8 +37,26 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		params.addValue("truckIds", truckIds);
 
 		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, params, new TruckRowMapper());
+		Set<Long> activeCallIds = new HashSet<>();
+		for (Truck truck : truckList) {
+			if (truck.getActiveCallId() > 0) {
+				activeCallIds.add(truck.getActiveCallId());
+			}
+		}
+		if (!activeCallIds.isEmpty()) {
+			Map<Long, String> dropOffLocationMap = callDaoService.getDropOffLocationByIds(new ArrayList<Long>(activeCallIds));
+			for (Truck truck : truckList) {
+				truck.setDropOffLocation(dropOffLocationMap.get(truck.getId()));
+			}
+		}
 
 		return truckList;
+	}
+
+	@Override
+	public Truck getById(long truckId) {
+		List<Truck> truckList = getByIds(Arrays.asList(truckId));
+		return truckList.get(0);
 	}
 
 	@Override
@@ -61,18 +85,45 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "select * from trucks order by insert_time asc";
 		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, new TruckRowMapper());
 
-		String callCountSql = "SELECT truck_id, COUNT(call_id) as number_of_calls FROM calls GROUP BY truck_id";
-		List<TruckCallNumber> truckCallNumberList = namedParameterJdbcTemplate.query(callCountSql, new TruckCallNumberRowMapper());
-		for (TruckCallNumber truckCallNumber : truckCallNumberList) {
-			for (Truck truck : truckList) {
-				if (truck.getId() == truckCallNumber.getTruckId()) {
-					truck.setNumberOfCalls(truckCallNumber.getNumberOfCalls());
-					break;
-				}
-			}
-		}
 		return truckList;
 	}
 
+	@Override
+	public Truck updateCall(long truckId, long callId) {
+		Truck truck = getById(truckId);
+
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("callId", callId);
+		params.addValue("truckId", truckId);
+
+		// determine if truck has an active call or not
+		boolean hasActiveCall = truck.getActiveCallId() > 0;
+
+		// build sql for truck based on active call assignment.
+		if (hasActiveCall) {
+			// if there is already an active call, updated queued call id
+			String truckUpdateSql = "update trucks set queued_call_id = :callId where truck_id = :truckId";
+			namedParameterJdbcTemplate.update(truckUpdateSql, params);
+
+		} else {
+			// no active call means update active call id
+			String truckUpdateSql = "update trucks set active_call_id = :callId where truck_id = :truckId";
+			namedParameterJdbcTemplate.update(truckUpdateSql, params);
+		}
+		// since sql was successful update and return updated truck object
+		if (hasActiveCall) {
+			truck.setActiveCallId(callId);
+		} else {
+			truck.setQueuedCallId(callId);
+		}
+		return truck;
+	}
+
+	@Override
+	public List<Truck> getAvailable() {
+		String sql = "select * from  trucks where trucks.active_call_id = 0 or trucks.queued_call_id = 0";
+		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, new TruckRowMapper());
+		return truckList;
+	}
 
 }

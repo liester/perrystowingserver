@@ -11,5 +11,11 @@ public interface TruckDaoService {
 	Truck create(Truck truck);
 
 	List<Truck> getAll();
+	
+	Truck updateCall(long truckId, long callId);
+	
+	Truck getById(long truckId);
+	
+	List<Truck> getAvailable();
 
 }

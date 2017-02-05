@@ -2,7 +2,9 @@ package com.perry.infrastructure.call;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,6 +37,13 @@ public class CallDaoServiceImpl implements CallDaoService {
 		List<Call> callList = namedParameterJdbcTemplate.query(sql, params, new CallRowMapper());
 
 		return callList;
+	}
+
+	@Override
+	public Call getById(long id) {
+		List<Call> callList = getByIds(Arrays.asList(id));
+		Call call = callList.get(0);
+		return call;
 	}
 
 	@Override
@@ -96,6 +105,8 @@ public class CallDaoServiceImpl implements CallDaoService {
 		String sql = "update calls set truck_id = :truckId where call_id = :callId";
 		namedParameterJdbcTemplate.update(sql, params);
 		Truck truck = truckDaoService.getByIds(Arrays.asList(truckId)).get(0);
+
+		truckDaoService.updateCall(truckId, callId);
 		return truck;
 
 	}
@@ -109,12 +120,37 @@ public class CallDaoServiceImpl implements CallDaoService {
 
 	@Override
 	public void unAssignTruck(long callId) {
+		// First update call to no longer be assigned.
+		Call call = getById(callId);
+
+		MapSqlParameterSource callParams = new MapSqlParameterSource();
+		callParams.addValue("callId", callId);
 		String sql = "update calls set truck_id = 0 where call_id = :callId";
+		namedParameterJdbcTemplate.update(sql, callParams);
 
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("callId", callId);
-
-		namedParameterJdbcTemplate.update(sql, params);
+		// Update truck
+		Truck truck = truckDaoService.getById(call.getTruckId());
+		// If call is active call, make queued call active
+		if (truck.getActiveCallId() == callId && truck.getQueuedCallId() > 0) {
+			MapSqlParameterSource queuedCallParams = new MapSqlParameterSource();
+			queuedCallParams.addValue("activeCallId", truck.getQueuedCallId());
+			queuedCallParams.addValue("queuedCallId", 0);
+			queuedCallParams.addValue("truckId", truck.getId());
+			String activeCallSql = "update trucks set active_call_id = :activeCallId, queued_call_id = :queuedCallId where truck_id= :truckId";
+			namedParameterJdbcTemplate.update(activeCallSql, queuedCallParams);
+		}else if (truck.getActiveCallId() == callId && truck.getQueuedCallId() == 0) {
+			MapSqlParameterSource queuedCallParams = new MapSqlParameterSource();
+			queuedCallParams.addValue("activeCallId", 0);
+			queuedCallParams.addValue("truckId", truck.getId());
+			String activeCallSql = "update trucks set active_call_id = :activeCallId where truck_id= :truckId";
+			namedParameterJdbcTemplate.update(activeCallSql, queuedCallParams);
+		}else if(truck.getQueuedCallId() == callId){
+			MapSqlParameterSource queuedCallParams = new MapSqlParameterSource();
+			queuedCallParams.addValue("queuedCallId", 0);
+			queuedCallParams.addValue("truckId", truck.getId());
+			String activeCallSql = "update trucks set queued_call_id = :queuedCallId where truck_id= :truckId";
+			namedParameterJdbcTemplate.update(activeCallSql, queuedCallParams);
+		}
 
 	}
 
@@ -181,9 +217,20 @@ public class CallDaoServiceImpl implements CallDaoService {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("truckId", truckId);
 		List<Call> callList = namedParameterJdbcTemplate.query(sql, params, new CallRowMapper());
-		if(!callList.isEmpty()) {
+		if (!callList.isEmpty()) {
 			return callList.get(0);
 		}
 		return null;
 	}
+
+	@Override
+	public Map<Long, String> getDropOffLocationByIds(List<Long> callIds) {
+		List<Call> callList = getByIds(callIds);
+		Map<Long, String> dropOffLocationMap = new HashMap<>();
+		for (Call call : callList) {
+			dropOffLocationMap.put(call.getTruckId(), call.getDropOffLocation());
+		}
+		return dropOffLocationMap;
+	}
+
 }

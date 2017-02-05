@@ -13,11 +13,15 @@ public class Truck extends Persisted {
 
 	private TruckStatusType truckStatusType;
 
-	private long numberOfCalls;
-
 	private String gisLatitude;
 
 	private String gisLongitude;
+
+	private long activeCallId;
+
+	private long queuedCallId;
+
+	private String dropOffLocation;
 
 	public String getIdentifier() {
 		return this.identifier;
@@ -51,14 +55,6 @@ public class Truck extends Persisted {
 		this.truckStatusType = truckStatusType;
 	}
 
-	public long getNumberOfCalls() {
-		return numberOfCalls;
-	}
-
-	public void setNumberOfCalls(long numberOfCalls) {
-		this.numberOfCalls = numberOfCalls;
-	}
-
 	public String getGis_latitude() {
 		return gisLatitude;
 	}
@@ -77,6 +73,30 @@ public class Truck extends Persisted {
 
 	public void setGisLongitude(String gisLongitude) {
 		this.gisLongitude = gisLongitude;
+	}
+
+	public long getActiveCallId() {
+		return activeCallId;
+	}
+
+	public void setActiveCallId(long activeCallId) {
+		this.activeCallId = activeCallId;
+	}
+
+	public long getQueuedCallId() {
+		return queuedCallId;
+	}
+
+	public void setQueuedCallId(long queuedCallId) {
+		this.queuedCallId = queuedCallId;
+	}
+
+	public String getDropOffLocation() {
+		return dropOffLocation;
+	}
+
+	public void setDropOffLocation(String dropOffLocation) {
+		this.dropOffLocation = dropOffLocation;
 	}
 
 }

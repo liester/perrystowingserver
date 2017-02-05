@@ -24,6 +24,8 @@ public class TruckRowMapper implements RowMapper<Truck> {
 		truck.setGisLatitude(rs.getString("gis_latitude"));
 		truck.setGisLongitude(rs.getString("gis_longitude"));
 		truck.setTruckStatusType(TruckStatusType.fromValue(rs.getString("status")));
+		truck.setActiveCallId(rs.getLong("active_call_id"));
+		truck.setQueuedCallId(rs.getLong("queued_call_id"));
 
 		return truck;
 	}

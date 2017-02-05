@@ -64,7 +64,7 @@ public class CallController {
 		return callList;
 	}
 
-	@RequestMapping(value = "/available", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	// @RequestMapping(value = "/available", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public List<Call> getAvailableCalls() {
 		List<Call> callList = callDomainService.getAvailable();
 		return callList;
@@ -82,7 +82,7 @@ public class CallController {
 		callDomainService.unAssignTruck(callId);
 
 	}
-	
+
 	@RequestMapping(value = "/activeTruck/{truckId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public Call getTruckActive(@PathVariable long truckId) {
 		return callDomainService.getTruckActive(truckId);

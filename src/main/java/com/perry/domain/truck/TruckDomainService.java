@@ -9,5 +9,7 @@ public interface TruckDomainService {
 	Truck create(Truck truck);
 
 	List<Truck> getAll();
+	
+	List<Truck> getAvailable();
 
 }

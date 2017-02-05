@@ -31,4 +31,10 @@ public class TruckDomainServiceImpl implements TruckDomainService {
 		return truckList;
 	}
 
+	@Override
+	public List<Truck> getAvailable() {
+		List<Truck> truckList = truckDaoService.getAvailable();
+		return truckList;
+	}
+
 }
