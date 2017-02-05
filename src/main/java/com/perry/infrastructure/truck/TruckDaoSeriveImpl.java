@@ -85,6 +85,19 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "select * from trucks order by insert_time asc";
 		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, new TruckRowMapper());
 
+		Set<Long> activeCallIds = new HashSet<>();
+		for (Truck truck : truckList) {
+			if (truck.getActiveCallId() > 0) {
+				activeCallIds.add(truck.getActiveCallId());
+			}
+		}
+		if (!activeCallIds.isEmpty()) {
+			Map<Long, String> dropOffLocationMap = callDaoService.getDropOffLocationByIds(new ArrayList<Long>(activeCallIds));
+			for (Truck truck : truckList) {
+				truck.setDropOffLocation(dropOffLocationMap.get(truck.getId()));
+			}
+		}
+
 		return truckList;
 	}
 
