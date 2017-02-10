@@ -1,10 +1,13 @@
 package com.perry.infrastructure.call;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -94,6 +97,23 @@ public class CallDaoServiceImpl implements CallDaoService {
 	public List<Call> getAllCalls() {
 		String sql = "select * from calls order by insert_time asc ";
 		List<Call> callList = namedParameterJdbcTemplate.query(sql, new CallRowMapper());
+
+		Set<Long> truckIds = new HashSet<>();
+		for (Call call : callList) {
+			if (call.getTruckId() > 0) {
+				truckIds.add(call.getTruckId());
+			}
+		}
+		List<Truck> truckList = truckDaoService.getByIds(new ArrayList<Long>(truckIds));
+		for (Call call : callList) {
+			for (Truck truck : truckList) {
+				if (call.getTruckId() == truck.getId()) {
+					call.setTruckIdentifier(truck.getIdentifier());
+					break;
+				}
+			}
+		}
+
 		return callList;
 	}
 
@@ -138,13 +158,13 @@ public class CallDaoServiceImpl implements CallDaoService {
 			queuedCallParams.addValue("truckId", truck.getId());
 			String activeCallSql = "update trucks set active_call_id = :activeCallId, queued_call_id = :queuedCallId where truck_id= :truckId";
 			namedParameterJdbcTemplate.update(activeCallSql, queuedCallParams);
-		}else if (truck.getActiveCallId() == callId && truck.getQueuedCallId() == 0) {
+		} else if (truck.getActiveCallId() == callId && truck.getQueuedCallId() == 0) {
 			MapSqlParameterSource queuedCallParams = new MapSqlParameterSource();
 			queuedCallParams.addValue("activeCallId", 0);
 			queuedCallParams.addValue("truckId", truck.getId());
 			String activeCallSql = "update trucks set active_call_id = :activeCallId where truck_id= :truckId";
 			namedParameterJdbcTemplate.update(activeCallSql, queuedCallParams);
-		}else if(truck.getQueuedCallId() == callId){
+		} else if (truck.getQueuedCallId() == callId) {
 			MapSqlParameterSource queuedCallParams = new MapSqlParameterSource();
 			queuedCallParams.addValue("queuedCallId", 0);
 			queuedCallParams.addValue("truckId", truck.getId());

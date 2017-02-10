@@ -18,6 +18,8 @@ public class Call extends Persisted {
 
 	private TowTruckType towTruckType;
 
+	private String truckIdentifier;
+
 	public Call() {
 		// Default Constructor
 	}
@@ -78,6 +80,14 @@ public class Call extends Persisted {
 
 	public void setTowTruckType(TowTruckType towTruckType) {
 		this.towTruckType = towTruckType;
+	}
+
+	public String getTruckIdentifier() {
+		return truckIdentifier;
+	}
+
+	public void setTruckIdentifier(String truckIdentifier) {
+		this.truckIdentifier = truckIdentifier;
 	}
 
 }

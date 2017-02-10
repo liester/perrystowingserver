@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
+import com.perry.domain.call.Call;
 import com.perry.domain.truck.Truck;
 import com.perry.infrastructure.call.CallDaoService;
 
@@ -92,9 +93,14 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 			}
 		}
 		if (!activeCallIds.isEmpty()) {
-			Map<Long, String> dropOffLocationMap = callDaoService.getDropOffLocationByIds(new ArrayList<Long>(activeCallIds));
+			List<Call> callList = callDaoService.getByIds(new ArrayList<Long>(activeCallIds));
 			for (Truck truck : truckList) {
-				truck.setDropOffLocation(dropOffLocationMap.get(truck.getId()));
+				for (Call call : callList) {
+					if(call.getId().equals(truck.getActiveCallId())){
+						truck.setDropOffLocation(call.getDropOffLocation());
+						break;
+					}
+				}
 			}
 		}
 
