@@ -104,12 +104,14 @@ public class CallDaoServiceImpl implements CallDaoService {
 				truckIds.add(call.getTruckId());
 			}
 		}
-		List<Truck> truckList = truckDaoService.getByIds(new ArrayList<Long>(truckIds));
-		for (Call call : callList) {
-			for (Truck truck : truckList) {
-				if (call.getTruckId() == truck.getId()) {
-					call.setTruckIdentifier(truck.getIdentifier());
-					break;
+		if (!truckIds.isEmpty()) {
+			List<Truck> truckList = truckDaoService.getByIds(new ArrayList<Long>(truckIds));
+			for (Call call : callList) {
+				for (Truck truck : truckList) {
+					if (call.getTruckId() == truck.getId()) {
+						call.setTruckIdentifier(truck.getIdentifier());
+						break;
+					}
 				}
 			}
 		}
