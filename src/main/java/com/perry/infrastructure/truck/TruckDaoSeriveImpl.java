@@ -117,7 +117,11 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 
 		// determine if truck has an active call or not
 		boolean hasActiveCall = truck.getActiveCallId() > 0;
-
+		
+		//if call is already assigned to the truck, do not update truck.
+		if(truck.getActiveCallId() == callId || truck.getQueuedCallId() == callId){
+			return truck;
+		}
 		// build sql for truck based on active call assignment.
 		if (hasActiveCall) {
 			// if there is already an active call, updated queued call id
