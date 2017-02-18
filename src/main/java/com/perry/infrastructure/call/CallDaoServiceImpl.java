@@ -127,7 +127,8 @@ public class CallDaoServiceImpl implements CallDaoService {
 		String sql = "update calls set truck_id = :truckId where call_id = :callId";
 		namedParameterJdbcTemplate.update(sql, params);
 		Truck truck = truckDaoService.getByIds(Arrays.asList(truckId)).get(0);
-
+		truckDaoService.removeCall(callId);
+		
 		truckDaoService.updateCall(truckId, callId);
 		return truck;
 

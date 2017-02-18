@@ -96,7 +96,7 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 			List<Call> callList = callDaoService.getByIds(new ArrayList<Long>(activeCallIds));
 			for (Truck truck : truckList) {
 				for (Call call : callList) {
-					if(call.getId().equals(truck.getActiveCallId())){
+					if (call.getId().equals(truck.getActiveCallId())) {
 						truck.setDropOffLocation(call.getDropOffLocation());
 						break;
 					}
@@ -117,9 +117,9 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 
 		// determine if truck has an active call or not
 		boolean hasActiveCall = truck.getActiveCallId() > 0;
-		
-		//if call is already assigned to the truck, do not update truck.
-		if(truck.getActiveCallId() == callId || truck.getQueuedCallId() == callId){
+
+		// if call is already assigned to the truck, do not update truck.
+		if (truck.getActiveCallId() == callId || truck.getQueuedCallId() == callId) {
 			return truck;
 		}
 		// build sql for truck based on active call assignment.
@@ -146,6 +146,34 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 	public List<Truck> getAvailable() {
 		String sql = "select * from  trucks where trucks.active_call_id = 0 or trucks.queued_call_id = 0";
 		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, new TruckRowMapper());
+		return truckList;
+	}
+
+	@Override
+	public void removeCall(long callId) {
+		List<Truck> trucks = getByCallId(callId);
+		for (Truck truck : trucks) {
+			MapSqlParameterSource params = new MapSqlParameterSource();
+			params.addValue("truckId", truck.getId());
+			params.addValue("callId", callId);
+			if (truck.getActiveCallId() == callId) {
+				String sql = "update trucks set active_call_id = 0 where truck_id= :truckId";
+				namedParameterJdbcTemplate.update(sql, params);
+			}
+			if (truck.getQueuedCallId() == callId) {
+				String sql = "update trucks set queued_call_id = 0 where truck_id= :truckId";
+				namedParameterJdbcTemplate.update(sql, params);
+			}
+		}
+
+	}
+
+	@Override
+	public List<Truck> getByCallId(long callId) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("callId", callId);
+		String sql = "select * from trucks where trucks.active_call_id = :callId or trucks.queued_call_id=:callId";
+		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, params, new TruckRowMapper());
 		return truckList;
 	}
 
