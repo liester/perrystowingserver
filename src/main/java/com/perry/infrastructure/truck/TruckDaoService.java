@@ -3,6 +3,7 @@ package com.perry.infrastructure.truck;
 import java.util.List;
 
 import com.perry.domain.truck.Truck;
+import com.perry.domain.truck.TruckStatusType;
 
 public interface TruckDaoService {
 
@@ -21,5 +22,7 @@ public interface TruckDaoService {
 	void removeCall(long truckId);
 	
 	List<Truck> getByCallId(long callId);
+
+	int updateStatus(Long truckId, TruckStatusType statusType);
 
 }

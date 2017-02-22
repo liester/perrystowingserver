@@ -17,6 +17,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import com.perry.domain.call.Call;
 import com.perry.domain.truck.Truck;
+import com.perry.domain.truck.TruckStatusType;
 import com.perry.infrastructure.call.CallDaoService;
 
 import rowmappers.TruckRowMapper;
@@ -175,6 +176,15 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "select * from trucks where trucks.active_call_id = :callId or trucks.queued_call_id=:callId";
 		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, params, new TruckRowMapper());
 		return truckList;
+	}
+	
+	@Override
+	public int updateStatus(Long truckId, TruckStatusType statusType) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("truckId", truckId);
+		params.addValue("status", statusType.getValue());
+		String sql = "update trucks set status = :status where truck_id = :truckId";
+		return namedParameterJdbcTemplate.update(sql, params);
 	}
 
 }

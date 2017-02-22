@@ -35,6 +35,12 @@ public class TruckController {
 		Truck createdTruck = truckDomainService.create(truck);
 		return createdTruck;
 	}
+	
+	@RequestMapping(value = "/status/{truckId}/{status}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
+	public Truck updateStatus(@PathVariable Long truckId, @PathVariable String status) {
+		Truck updatedTruck = truckDomainService.updateStatus(truckId, status);
+		return updatedTruck;
+	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public List<Truck> getAllTrucks() {

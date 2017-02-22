@@ -24,6 +24,16 @@ public class TruckDomainServiceImpl implements TruckDomainService {
 		Truck createdTruck = truckDaoService.create(truck);
 		return createdTruck;
 	}
+	
+	@Override
+	public Truck updateStatus(Long truckId, String status) {
+		TruckStatusType statusType = TruckStatusType.fromValue(status);
+		int changed = truckDaoService.updateStatus(truckId, statusType);
+		if(changed == 1) {
+			return truckDaoService.getById(truckId);
+		}
+		return null;
+	}
 
 	@Override
 	public List<Truck> getAll() {

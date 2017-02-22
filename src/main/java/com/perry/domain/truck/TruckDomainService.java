@@ -12,4 +12,6 @@ public interface TruckDomainService {
 	
 	List<Truck> getAvailable();
 
+	Truck updateStatus(Long truckId, String status);
+
 }
