@@ -24,6 +24,15 @@ public enum KeyLocationType {
 		}
 		throw new EnumerationException("Failed to convert " + id + " to class:", KeyLocationType.class.getName());
 	}
+	
+	public static KeyLocationType fromValue(String value) {
+		for (KeyLocationType keyLocation : KeyLocationType.values()) {
+			if (keyLocation.getValue().equalsIgnoreCase(value)) {
+				return keyLocation;
+			}
+		}
+		throw new EnumerationException(value, KeyLocationType.class.getName());
+	}
 
 	public long getId() {
 		return id;

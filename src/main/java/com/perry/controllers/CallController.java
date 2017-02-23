@@ -27,6 +27,7 @@ import com.perry.domain.Vehicle;
 import com.perry.domain.call.Call;
 import com.perry.domain.call.CallDomainService;
 import com.perry.domain.truck.Truck;
+import com.perry.domain.truck.TruckDomainService;
 
 @RestController
 @RequestMapping("/calls")
@@ -34,6 +35,8 @@ public class CallController {
 
 	@Inject
 	private CallDomainService callDomainService;
+	@Inject
+	private TruckDomainService truckDomainService;
 
 	@RequestMapping(value = "/{callId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public Call getJobById(@PathVariable Long callId) {
@@ -86,5 +89,17 @@ public class CallController {
 	@RequestMapping(value = "/activeTruck/{truckId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public Call getTruckActive(@PathVariable long truckId) {
 		return callDomainService.getTruckActive(truckId);
+	}
+	
+	@RequestMapping(value = "/activeTruck/{truckId}/complete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
+	public void completeActiveTruckCall(@PathVariable long truckId) {
+		Call currentCall = callDomainService.getTruckActive(truckId);
+		truckDomainService.updateStatus(truckId, "Available");
+		callDomainService.unAssignTruck(currentCall.getId());
+		
+		currentCall.setTruckId(-1);
+		callDomainService.edit(currentCall);
+//		return null;
+		//TODO
 	}
 }

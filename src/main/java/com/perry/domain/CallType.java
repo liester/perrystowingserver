@@ -23,6 +23,14 @@ public enum CallType {
 		}
 		throw new EnumerationException(id, CallType.class.getName());
 	}
+	public static CallType fromValue(String value) {
+		for (CallType callType : CallType.values()) {
+			if (callType.getValue().equalsIgnoreCase(value)) {
+				return callType;
+			}
+		}
+		throw new EnumerationException(value, CallType.class.getName());
+	}
 
 	public long getId() {
 		return this.id;
