@@ -61,10 +61,16 @@ public class CallDomainServieImpl implements CallDomainService {
 		Call updatedCall = callDaoService.edit(call);
 		return updatedCall;
 	}
-	
+
 	@Override
 	public Call getTruckActive(long truckId) {
 		return callDaoService.getTruckActive(truckId);
+	}
+
+	@Override
+	public List<Call> getAllNonCompleteCalls() {
+		List<Call> nonCompleteCalls = callDaoService.getAllNonCompleteCalls();
+		return nonCompleteCalls;
 	}
 
 }

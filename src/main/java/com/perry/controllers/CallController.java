@@ -90,16 +90,19 @@ public class CallController {
 	public Call getTruckActive(@PathVariable long truckId) {
 		return callDomainService.getTruckActive(truckId);
 	}
-	
+
 	@RequestMapping(value = "/activeTruck/{truckId}/complete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
 	public void completeActiveTruckCall(@PathVariable long truckId) {
 		Call currentCall = callDomainService.getTruckActive(truckId);
 		truckDomainService.updateStatus(truckId, "Available");
 		callDomainService.unAssignTruck(currentCall.getId());
-		
+
 		currentCall.setTruckId(-1);
 		callDomainService.edit(currentCall);
-//		return null;
-		//TODO
+	}
+
+	@RequestMapping(value = "/nonComplete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	public List<Call> getNonComplTruckActive() {
+		return callDomainService.getAllNonCompleteCalls();
 	}
 }

@@ -30,4 +30,6 @@ public interface CallDaoService {
 
 	Map<Long, String> getDropOffLocationByIds(List<Long> arrayList);
 
+	List<Call> getAllNonCompleteCalls();
+
 }

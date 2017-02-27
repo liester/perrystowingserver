@@ -118,6 +118,32 @@ public class CallDaoServiceImpl implements CallDaoService {
 
 		return callList;
 	}
+	
+	@Override
+	public List<Call> getAllNonCompleteCalls() {
+		String sql = "select * from calls where calls.truck_id != -1 order by insert_time asc ";
+		List<Call> callList = namedParameterJdbcTemplate.query(sql, new CallRowMapper());
+
+		Set<Long> truckIds = new HashSet<>();
+		for (Call call : callList) {
+			if (call.getTruckId() > 0) {
+				truckIds.add(call.getTruckId());
+			}
+		}
+		if (!truckIds.isEmpty()) {
+			List<Truck> truckList = truckDaoService.getByIds(new ArrayList<Long>(truckIds));
+			for (Call call : callList) {
+				for (Truck truck : truckList) {
+					if (call.getTruckId() == truck.getId()) {
+						call.setTruckIdentifier(truck.getIdentifier());
+						break;
+					}
+				}
+			}
+		}
+
+		return callList;
+	}
 
 	@Override
 	public Truck assignTruck(long callId, long truckId) {
@@ -205,6 +231,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 				"       customer_payment_information=:customerPaymentInformation, \r\n" + //
 				"       insert_by=:insertBy, \r\n" + //
 				"       update_by=:updateBy, \r\n" + //
+				"       truck_id=:truckId, \r\n" + //
 				"       update_time=:updateTime WHERE call_id = :callId";
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
@@ -225,6 +252,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("updateBy", 1);
 		params.addValue("updateTime", Instant.now().getEpochSecond());
 		params.addValue("callId", call.getId());
+		params.addValue("truckId", call.getTruckId());
 
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql, params, keyHolder);
