@@ -57,13 +57,13 @@ public class CallDaoServiceImpl implements CallDaoService {
 				"            customer_vehicle_model, customer_vehicle_color, customer_vehicle_license_plate_number, \r\n" + //
 				"            customer_phone_number, customer_vehicle_key_location, customer_call_type, \r\n" + //
 				"            customer_payment_information, insert_by, update_by, truck_id, \r\n" + //
-				"            insert_time, update_time)\r\n" + //
+				"            insert_time, update_time, comment)\r\n" + //
 				"    VALUES (:customerFirstName, :customerLastName, :pickUpLocation, \r\n" + //
 				"            :dropOffLocation, :customerVehicleYear, :customerVehicleMake, \r\n" + //
 				"            :customerVehicleModel, :customerVehicleColor, :customerVehicleLiscensePlateNumber, \r\n" + //
 				"            :customerPhoneNumber, :customerVehicleKeyLocation, :customerCallType, \r\n" + //
 				"            :customerPaymentInformation , :insertBy, :updateBy, :truckId, \r\n" + //
-				"            :insertTime, :updateTime)";
+				"            :insertTime, :updateTime, :comment)";
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("customerFirstName", call.getCustomer().getFirstName());
@@ -84,6 +84,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("truckId", 0);
 		params.addValue("insertTime", Instant.now().getEpochSecond());
 		params.addValue("updateTime", Instant.now().getEpochSecond());
+		params.addValue("comment", call.getComment());
 
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql, params, keyHolder);

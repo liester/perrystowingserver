@@ -27,8 +27,9 @@ public class CallTest {
 		CallType callType = CallType.IMPOUND;
 		long truckId = 1;
 		TowTruckType requiredTruckType = TowTruckType.FIRST_AVAILABLE;
+		String comment = "This is a test comment";
 
-		Call call = new Call(customer, pickUpLocation, dropOffLocation, callType, truckId, requiredTruckType);
+		Call call = new Call(customer, pickUpLocation, dropOffLocation, callType, truckId, requiredTruckType, comment);
 
 		assertThat(call.getCustomer(), equalTo(customer));
 		assertThat(call.getPickUpLocation(), equalTo(pickUpLocation));
@@ -36,6 +37,7 @@ public class CallTest {
 		assertThat(call.getCallType(), equalTo(callType));
 		assertThat(call.getTruckId(), equalTo(truckId));
 		assertThat(call.getTowTruckType().getId(), equalTo(requiredTruckType.getId()));
+		assertThat(call.getComment(), equalTo(comment));
 	}
 
 	@Ignore
@@ -59,8 +61,10 @@ public class CallTest {
 		CallType callType = CallType.IMPOUND;
 		long truckId = 1;
 		TowTruckType towTruckType = TowTruckType.FIRST_AVAILABLE;
+		
+		String comment = "This is a test comment";
 
-		Call call = new Call(customer, pickUpLocation, dropOffLocation, callType, truckId, towTruckType);
+		Call call = new Call(customer, pickUpLocation, dropOffLocation, callType, truckId, towTruckType, comment);
 		ObjectMapper mapper = new ObjectMapper();
 		System.out.println(mapper.writeValueAsString(call));
 	}

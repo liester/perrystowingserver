@@ -39,6 +39,7 @@ public class CallRowMapper implements RowMapper<Call> {
 		call.setTruckId(rs.getLong(("truck_id")));
 		call.setInsertTime(rs.getLong("insert_time"));
 		call.setCallType(CallType.fromValue(rs.getString("customer_call_type")));
+		call.setComment(rs.getString("comment"));
 
 		return call;
 	}
