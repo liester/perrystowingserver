@@ -54,16 +54,17 @@ public class CallDaoServiceImpl implements CallDaoService {
 		String sql = "INSERT INTO calls(\r\n" + //
 				"            customer_first_name, customer_last_name, pick_up_location, \r\n" + //
 				"            drop_off_location, customer_vehicle_year, customer_vehicle_make, \r\n" + //
-				"            customer_vehicle_model, customer_vehicle_color, customer_vehicle_license_plate_number, \r\n" + //
+				"            customer_vehicle_model, customer_vehicle_color, customer_vehicle_license_plate_number, \r\n"
+				+ //
 				"            customer_phone_number, customer_vehicle_key_location, customer_call_type, \r\n" + //
 				"            customer_payment_information, insert_by, update_by, truck_id, \r\n" + //
-				"            insert_time, update_time, comment)\r\n" + //
+				"            insert_time, update_time, comment, priceQuote)\r\n" + //
 				"    VALUES (:customerFirstName, :customerLastName, :pickUpLocation, \r\n" + //
 				"            :dropOffLocation, :customerVehicleYear, :customerVehicleMake, \r\n" + //
 				"            :customerVehicleModel, :customerVehicleColor, :customerVehicleLiscensePlateNumber, \r\n" + //
 				"            :customerPhoneNumber, :customerVehicleKeyLocation, :customerCallType, \r\n" + //
 				"            :customerPaymentInformation , :insertBy, :updateBy, :truckId, \r\n" + //
-				"            :insertTime, :updateTime, :comment)";
+				"            :insertTime, :updateTime, :comment, :priceQuote)";
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("customerFirstName", call.getCustomer().getFirstName());
@@ -85,6 +86,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("insertTime", Instant.now().getEpochSecond());
 		params.addValue("updateTime", Instant.now().getEpochSecond());
 		params.addValue("comment", call.getComment());
+		params.addValue("priceQuote", call.getCustomer().getPriceQuote());
 
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql, params, keyHolder);
@@ -119,7 +121,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 
 		return callList;
 	}
-	
+
 	@Override
 	public List<Call> getAllNonCompleteCalls() {
 		String sql = "select * from calls where calls.truck_id != -1 order by insert_time asc ";
@@ -155,7 +157,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		namedParameterJdbcTemplate.update(sql, params);
 		Truck truck = truckDaoService.getByIds(Arrays.asList(truckId)).get(0);
 		truckDaoService.removeCall(callId);
-		
+
 		truckDaoService.updateCall(truckId, callId);
 		return truck;
 
@@ -233,6 +235,8 @@ public class CallDaoServiceImpl implements CallDaoService {
 				"       insert_by=:insertBy, \r\n" + //
 				"       update_by=:updateBy, \r\n" + //
 				"       truck_id=:truckId, \r\n" + //
+				"       comment=:comment, \r\n" + //
+				"       customer_price_quote=:customerPriceQuote, \r\n" + //
 				"       update_time=:updateTime WHERE call_id = :callId";
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
@@ -254,6 +258,8 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("updateTime", Instant.now().getEpochSecond());
 		params.addValue("callId", call.getId());
 		params.addValue("truckId", call.getTruckId());
+		params.addValue("comment", call.getComment());
+		params.addValue("customerPriceQuote", call.getCustomer().getPriceQuote());
 
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql, params, keyHolder);
