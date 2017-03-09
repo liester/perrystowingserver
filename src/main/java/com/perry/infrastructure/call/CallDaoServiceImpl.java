@@ -79,7 +79,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("customerPhoneNumber", call.getCustomer().getPhoneNumber());
 		params.addValue("customerVehicleKeyLocation", call.getCustomer().getVehicle().getKeyLocationType().getValue());
 		params.addValue("customerCallType", call.getCallType().getValue());
-		params.addValue("customerPaymentInformation", call.getCustomer().getVehicle().getMake());
+		params.addValue("customerPaymentInformation", call.getCustomer().getPaymentType().getValue());
 		params.addValue("insertBy", 1);
 		params.addValue("updateBy", 1);
 		params.addValue("truckId", 0);

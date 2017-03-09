@@ -22,6 +22,16 @@ public enum PaymentType {
 		}
 		throw new EnumerationException(id, PaymentType.class.getName());
 	}
+	
+	public static PaymentType fromValue(String value) {
+		for (PaymentType paymentType : PaymentType.values()) {
+			if (paymentType.getValue() == value) {
+				return paymentType;
+			}
+		}
+		return null;
+//		throw new EnumerationException(value, PaymentType.class.getName());
+	}
 
 	public long getId() {
 		return id;

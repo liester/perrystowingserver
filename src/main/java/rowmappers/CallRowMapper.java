@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import com.perry.domain.CallType;
 import com.perry.domain.Customer;
 import com.perry.domain.KeyLocationType;
+import com.perry.domain.PaymentType;
 import com.perry.domain.Vehicle;
 import com.perry.domain.call.Call;
 
@@ -31,6 +32,7 @@ public class CallRowMapper implements RowMapper<Call> {
 		customer.setPhoneNumber(rs.getString("customer_phone_number"));
 		customer.setVehicle(vehicle);
 		customer.setPriceQuote(rs.getString("customer_price_quote"));
+		customer.setPaymentType(PaymentType.fromValue(rs.getString("customer_payment_information")));
 
 		call.setId(rs.getLong("call_id"));
 		call.setCustomer(customer);

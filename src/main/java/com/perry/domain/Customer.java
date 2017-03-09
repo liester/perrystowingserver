@@ -10,6 +10,8 @@ public class Customer {
 	private Vehicle vehicle;
 
 	private String priceQuote;
+	
+	private PaymentType paymentType;
 
 	public String getFirstName() {
 		return firstName;
@@ -51,4 +53,11 @@ public class Customer {
 		this.priceQuote = priceQuote;
 	}
 
+	public PaymentType getPaymentType() {
+		return paymentType;
+	}
+	
+	public void setPaymentType(PaymentType paymentType) {
+		this.paymentType = paymentType;
+	}
 }
