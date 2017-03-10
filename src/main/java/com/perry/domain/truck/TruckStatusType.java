@@ -3,7 +3,7 @@ package com.perry.domain.truck;
 import com.perry.exceptions.EnumerationException;
 
 public enum TruckStatusType {
-	AVAILABLE(1, "Available"), EN_ROUTE(2, "En-Route"), LOADED(3, "Loaded");
+	AVAILABLE(1, "Available"), EN_ROUTE(2, "En-Route"), LOADED(3, "Loaded"), OFF_DUTY(4, "Off-duty");
 
 	private long id;
 

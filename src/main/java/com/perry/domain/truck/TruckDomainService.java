@@ -14,4 +14,8 @@ public interface TruckDomainService {
 
 	Truck updateStatus(Long truckId, String status);
 
+	Truck updateDriverStatusAvailable(Long truckId, String driver);
+
+	Truck updateDriverStatusOffDuty(Long truckId);
+
 }

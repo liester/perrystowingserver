@@ -25,4 +25,6 @@ public interface TruckDaoService {
 
 	int updateStatus(Long truckId, TruckStatusType statusType);
 
+	int updateDriver(Long truckId, String driverName);
+
 }

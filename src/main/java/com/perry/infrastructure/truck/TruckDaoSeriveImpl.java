@@ -186,5 +186,14 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "update trucks set status = :status where truck_id = :truckId";
 		return namedParameterJdbcTemplate.update(sql, params);
 	}
+	
+	@Override
+	public int updateDriver(Long truckId, String driverName) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("truckId", truckId);
+		params.addValue("driver", driverName);
+		String sql = "update trucks set driver_first_name = :driver, driver_last_name = '' where truck_id = :truckId";
+		return namedParameterJdbcTemplate.update(sql, params);
+	}
 
 }

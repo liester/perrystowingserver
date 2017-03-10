@@ -41,6 +41,18 @@ public class TruckController {
 		Truck updatedTruck = truckDomainService.updateStatus(truckId, status);
 		return updatedTruck;
 	}
+	
+	@RequestMapping(value = "/driver/{truckId}/{driver}/available", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
+	public Truck updateDriverAndStatusAvailable(@PathVariable Long truckId, @PathVariable String driver) {
+		Truck updatedTruck = truckDomainService.updateDriverStatusAvailable(truckId, driver);
+		return updatedTruck;
+	}
+	
+	@RequestMapping(value = "/driver/{truckId}/offduty", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
+	public Truck updateDriverAndStatusOffDuty(@PathVariable Long truckId) {
+		Truck updatedTruck = truckDomainService.updateDriverStatusOffDuty(truckId);
+		return updatedTruck;
+	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public List<Truck> getAllTrucks() {
