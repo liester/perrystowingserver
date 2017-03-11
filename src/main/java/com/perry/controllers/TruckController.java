@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perry.domain.Location;
 import com.perry.domain.truck.Truck;
 import com.perry.domain.truck.TruckDomainService;
 import com.perry.domain.truck.TruckId;
@@ -72,6 +73,11 @@ public class TruckController {
 		List<Truck> truckList = truckDomainService.getAll();
 		truckList.stream().forEach(truck -> ids.add(new TruckId(truck.getId(), truck.getIdentifier())));
 		return ids;
+	}
+	
+	@RequestMapping(value = "/location/{truckId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
+	public void updateTruckLocation(@PathVariable Long truckId, @RequestBody Location location) {
+		truckDomainService.updateLocation(truckId, location.getLat(), location.getLon());
 	}
 
 }

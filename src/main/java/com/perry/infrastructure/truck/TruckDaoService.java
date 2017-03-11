@@ -27,4 +27,6 @@ public interface TruckDaoService {
 
 	int updateDriver(Long truckId, String driverName);
 
+	void updateLocation(Long truckId, String lat, String lon);
+
 }

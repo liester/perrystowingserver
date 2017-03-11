@@ -66,5 +66,10 @@ public class TruckDomainServiceImpl implements TruckDomainService {
 		List<Truck> truckList = truckDaoService.getAvailable();
 		return truckList;
 	}
+	
+	@Override
+	public void updateLocation(Long truckId, String lat, String lon) {
+		truckDaoService.updateLocation(truckId, lat, lon);
+	}
 
 }

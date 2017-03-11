@@ -195,5 +195,15 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "update trucks set driver_first_name = :driver, driver_last_name = '' where truck_id = :truckId";
 		return namedParameterJdbcTemplate.update(sql, params);
 	}
+	
+	@Override
+	public void updateLocation(Long truckId, String lat, String lon) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("truckId", truckId);
+		params.addValue("lat", lat);
+		params.addValue("lon", lon);
+		String sql = "update trucks set gis_latitude = :lat, gis_longitude = :lon where truck_id = :truckId";
+		namedParameterJdbcTemplate.update(sql, params);
+	}
 
 }
