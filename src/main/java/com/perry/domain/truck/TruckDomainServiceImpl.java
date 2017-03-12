@@ -42,26 +42,6 @@ public class TruckDomainServiceImpl implements TruckDomainService {
 	}
 	
 	@Override
-	public Truck updateDriverStatusAvailable(Long truckId, String driver) {
-		int changed = truckDaoService.updateDriver(truckId, driver);
-		if(changed == 1) {
-			truckDaoService.updateStatus(truckId, TruckStatusType.AVAILABLE);
-			return truckDaoService.getById(truckId);
-		}
-		return null;
-	}
-	
-	@Override
-	public Truck updateDriverStatusOffDuty(Long truckId) {
-		int changed = truckDaoService.updateDriver(truckId, "");
-		if(changed == 1) {
-			truckDaoService.updateStatus(truckId, TruckStatusType.OFF_DUTY);
-			return truckDaoService.getById(truckId);
-		}
-		return null;
-	}
-
-	@Override
 	public List<Truck> getAll() {
 		List<Truck> truckList = truckDaoService.getAll();
 		return truckList;

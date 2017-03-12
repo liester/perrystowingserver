@@ -89,12 +89,14 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "update trucks set " + 
 				"driver_first_name = :driverFirstName, " + 
 				"driver_last_name = :driverLastName, " + 
-				"identifier = :identifier where " + 
+				"identifier = :identifier," +
+				"update_time = :updateTime where " + 
 				"truck_id = :truckId ";
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("driverFirstName", truck.getDriverFirstName());
 		params.addValue("driverLastName", truck.getDriverLastName());
 		params.addValue("identifier", truck.getIdentifier());
+		params.addValue("updateTime", Instant.now().getEpochSecond());
 		params.addValue("truckId", truck.getId());
 		namedParameterJdbcTemplate.update(sql, params);
 		return truck;
@@ -201,16 +203,8 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("truckId", truckId);
 		params.addValue("status", statusType.getValue());
-		String sql = "update trucks set status = :status where truck_id = :truckId";
-		return namedParameterJdbcTemplate.update(sql, params);
-	}
-
-	@Override
-	public int updateDriver(Long truckId, String driverName) {
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("truckId", truckId);
-		params.addValue("driver", driverName);
-		String sql = "update trucks set driver_first_name = :driver, driver_last_name = '' where truck_id = :truckId";
+		params.addValue("updateTime", Instant.now().getEpochSecond());
+		String sql = "update trucks set status = :status, update_time = :updateTime where truck_id = :truckId";
 		return namedParameterJdbcTemplate.update(sql, params);
 	}
 
@@ -220,7 +214,8 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		params.addValue("truckId", truckId);
 		params.addValue("lat", lat);
 		params.addValue("lon", lon);
-		String sql = "update trucks set gis_latitude = :lat, gis_longitude = :lon where truck_id = :truckId";
+		params.addValue("updateTime", Instant.now().getEpochSecond());
+		String sql = "update trucks set gis_latitude = :lat, gis_longitude = :lon, update_time = :updateTime where truck_id = :truckId";
 		namedParameterJdbcTemplate.update(sql, params);
 	}
 
