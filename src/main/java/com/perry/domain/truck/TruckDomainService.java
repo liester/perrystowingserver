@@ -19,5 +19,7 @@ public interface TruckDomainService {
 	Truck updateDriverStatusOffDuty(Long truckId);
 
 	void updateLocation(Long truckId, String lat, String lon);
+	
+	Truck edit(Truck truck);
 
 }
