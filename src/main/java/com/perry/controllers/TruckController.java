@@ -37,6 +37,12 @@ public class TruckController {
 		return createdTruck;
 	}
 	
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
+	public Truck editTruck(@RequestBody Truck truck) {
+		Truck createdTruck = truckDomainService.edit(truck);
+		return createdTruck;
+	}
+	
 	@RequestMapping(value = "/status/{truckId}/{status}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
 	public Truck updateStatus(@PathVariable Long truckId, @PathVariable String status) {
 		Truck updatedTruck = truckDomainService.updateStatus(truckId, status);

@@ -1,5 +1,6 @@
 package com.perry.domain.truck;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.perry.exceptions.EnumerationException;
 
 public enum TruckStatusType {
@@ -39,7 +40,7 @@ public enum TruckStatusType {
 	public void setId(long id) {
 		this.id = id;
 	}
-
+	@JsonValue
 	public String getValue() {
 		return value;
 	}

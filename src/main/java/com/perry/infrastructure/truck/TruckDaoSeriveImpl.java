@@ -46,7 +46,8 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 			}
 		}
 		if (!activeCallIds.isEmpty()) {
-			Map<Long, String> dropOffLocationMap = callDaoService.getDropOffLocationByIds(new ArrayList<Long>(activeCallIds));
+			Map<Long, String> dropOffLocationMap = callDaoService
+					.getDropOffLocationByIds(new ArrayList<Long>(activeCallIds));
 			for (Truck truck : truckList) {
 				truck.setDropOffLocation(dropOffLocationMap.get(truck.getId()));
 			}
@@ -63,15 +64,16 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 
 	@Override
 	public Truck create(Truck truck) {
-		String sql = "INSERT INTO trucks(\r\n" + //
-				"            driver_first_name, driver_last_name, status, insert_time, \r\n" + //
+		String sql = "INSERT INTO trucks(" + //
+				"           identifier, driver_first_name, driver_last_name, status, insert_time, \r\n" + //
 				"            update_time, insert_by, update_by)\r\n" + //
-				"    VALUES (:driverFirstName, :driverLastName, :status, :insertTime,  \r\n" + //
+				"    VALUES (:identifier, :driverFirstName, :driverLastName, :status, :insertTime,  \r\n" + //
 				"            :updateTime, :insertBy, :updateBy);";
 		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("identifier", truck.getIdentifier());
 		params.addValue("driverFirstName", truck.getDriverFirstName());
 		params.addValue("driverLastName", truck.getDriverLastName());
-		params.addValue("status", truck.getTruckStatusType().getValue());
+		params.addValue("status", TruckStatusType.OFF_DUTY.getValue());
 		params.addValue("insertTime", Instant.now().getEpochSecond());
 		params.addValue("updateTime", Instant.now().getEpochSecond());
 		params.addValue("insertBy", truck.getInsertBy());
@@ -79,6 +81,22 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql, params, keyHolder);
 		truck.setId((Long) keyHolder.getKeys().get("truck_id"));
+		return truck;
+	}
+	
+	@Override
+	public Truck edit(Truck truck) {
+		String sql = "update trucks set " + 
+				"driver_first_name = :driverFirstName, " + 
+				"driver_last_name = :driverLastName, " + 
+				"identifier = :identifier where " + 
+				"truck_id = :truckId ";
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("driverFirstName", truck.getDriverFirstName());
+		params.addValue("driverLastName", truck.getDriverLastName());
+		params.addValue("identifier", truck.getIdentifier());
+		params.addValue("truckId", truck.getId());
+		namedParameterJdbcTemplate.update(sql, params);
 		return truck;
 	}
 
@@ -177,7 +195,7 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		List<Truck> truckList = namedParameterJdbcTemplate.query(sql, params, new TruckRowMapper());
 		return truckList;
 	}
-	
+
 	@Override
 	public int updateStatus(Long truckId, TruckStatusType statusType) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
@@ -186,7 +204,7 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "update trucks set status = :status where truck_id = :truckId";
 		return namedParameterJdbcTemplate.update(sql, params);
 	}
-	
+
 	@Override
 	public int updateDriver(Long truckId, String driverName) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
@@ -195,7 +213,7 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		String sql = "update trucks set driver_first_name = :driver, driver_last_name = '' where truck_id = :truckId";
 		return namedParameterJdbcTemplate.update(sql, params);
 	}
-	
+
 	@Override
 	public void updateLocation(Long truckId, String lat, String lon) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
