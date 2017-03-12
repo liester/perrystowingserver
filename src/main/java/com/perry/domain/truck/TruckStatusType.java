@@ -25,7 +25,7 @@ public enum TruckStatusType {
 	
 	public static TruckStatusType fromValue(String value) {
 		for (TruckStatusType truckStatusType : TruckStatusType.values()) {
-			if (truckStatusType.getValue().equals(value)) {
+			if (truckStatusType.getValue().equalsIgnoreCase(value)) {
 				return truckStatusType;
 			}
 		}
