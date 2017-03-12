@@ -73,7 +73,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("dropOffLocation", call.getDropOffLocation());
 		params.addValue("customerVehicleYear", call.getCustomer().getVehicle().getYear());
 		params.addValue("customerVehicleMake", call.getCustomer().getVehicle().getMake());
-		params.addValue("customerVehicleModel", call.getCustomer().getVehicle().getMake());
+		params.addValue("customerVehicleModel", call.getCustomer().getVehicle().getModel());
 		params.addValue("customerVehicleColor", call.getCustomer().getVehicle().getColor());
 		params.addValue("customerVehicleLiscensePlateNumber", call.getCustomer().getVehicle().getLicensePlateNumber());
 		params.addValue("customerPhoneNumber", call.getCustomer().getPhoneNumber());
