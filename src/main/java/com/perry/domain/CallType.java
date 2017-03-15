@@ -1,10 +1,13 @@
 package com.perry.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.perry.exceptions.EnumerationException;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum CallType {
-	TOW(1, "Tow"), TIRE_CHANGE(2, "Tire Change"), UNLOCK(3, "Unlock"), JUMP_START(4, "Jump Start"), WINCH(5, "Winch"), IMPOUND(6, "Impound");
+	NONE(0, "None"),TOW(1, "Tow"), TIRE_CHANGE(2, "Tire Change"), UNLOCK(3, "Unlock"), JUMP_START(4, "Jump Start"), WINCH(5,
+			"Winch"), IMPOUND(6, "Impound");
 
 	private long id;
 
@@ -14,6 +17,7 @@ public enum CallType {
 		this.id = id;
 		this.value = value;
 	}
+
 	@JsonCreator
 	public static CallType fromId(long id) {
 		for (CallType callType : CallType.values()) {
@@ -23,6 +27,7 @@ public enum CallType {
 		}
 		throw new EnumerationException(id, CallType.class.getName());
 	}
+
 	public static CallType fromValue(String value) {
 		for (CallType callType : CallType.values()) {
 			if (callType.getValue().equalsIgnoreCase(value)) {

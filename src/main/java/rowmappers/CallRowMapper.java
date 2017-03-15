@@ -11,6 +11,7 @@ import com.perry.domain.KeyLocationType;
 import com.perry.domain.PaymentType;
 import com.perry.domain.Vehicle;
 import com.perry.domain.call.Call;
+import com.perry.domain.call.TowTruckType;
 
 public class CallRowMapper implements RowMapper<Call> {
 
@@ -42,6 +43,7 @@ public class CallRowMapper implements RowMapper<Call> {
 		call.setInsertTime(rs.getLong("insert_time"));
 		call.setCallType(CallType.fromValue(rs.getString("customer_call_type")));
 		call.setComment(rs.getString("comment"));
+		call.setTowTruckType(TowTruckType.fromValue(rs.getString("tow_truck_type")));
 
 		return call;
 	}

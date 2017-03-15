@@ -39,7 +39,7 @@ public class CallController {
 	private TruckDomainService truckDomainService;
 
 	@RequestMapping(value = "/{callId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
-	public Call getJobById(@PathVariable Long callId) {
+	public Call getById(@PathVariable Long callId) {
 		List<Call> callList = callDomainService.getByIds(Arrays.asList(callId));
 		return callList.get(0);
 	}

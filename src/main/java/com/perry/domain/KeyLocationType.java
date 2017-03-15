@@ -1,10 +1,13 @@
 package com.perry.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.perry.exceptions.EnumerationException;
 
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum KeyLocationType {
-	NO_KEYS(1, "No Keys"), KEYS_IN_VEHICLE(2, "Keys in Vehicle"), CALL_FOR_KEYS(3, "Call for Keys"), KEYS_AT_DESTINATION(4, "Keys at Destination");
+	NONE(0,"None"),NO_KEYS(1, "No Keys"), KEYS_IN_VEHICLE(2, "Keys in Vehicle"), CALL_FOR_KEYS(3, "Call for Keys"), KEYS_AT_DESTINATION(4, "Keys at Destination"),KEYS_WITH_OWNER_SHOP(5, "Keys with owner/shop");
 
 	private long id;
 
@@ -26,6 +29,10 @@ public enum KeyLocationType {
 	}
 	
 	public static KeyLocationType fromValue(String value) {
+		if(value == null){
+			return null;
+		}
+		value = value.trim();
 		for (KeyLocationType keyLocation : KeyLocationType.values()) {
 			if (keyLocation.getValue().equalsIgnoreCase(value)) {
 				return keyLocation;

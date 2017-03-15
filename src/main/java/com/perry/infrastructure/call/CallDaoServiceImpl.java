@@ -51,20 +51,20 @@ public class CallDaoServiceImpl implements CallDaoService {
 
 	@Override
 	public Call create(Call call) {
-		String sql = "INSERT INTO calls(\r\n" + //
-				"            customer_first_name, customer_last_name, pick_up_location, \r\n" + //
-				"            drop_off_location, customer_vehicle_year, customer_vehicle_make, \r\n" + //
-				"            customer_vehicle_model, customer_vehicle_color, customer_vehicle_license_plate_number, \r\n"
+		String sql = "INSERT INTO calls(\n" + //
+				"            customer_first_name, customer_last_name, pick_up_location, \n" + //
+				"            drop_off_location, customer_vehicle_year, customer_vehicle_make, \n" + //
+				"            customer_vehicle_model, customer_vehicle_color, customer_vehicle_license_plate_number, \n"
 				+ //
-				"            customer_phone_number, customer_vehicle_key_location, customer_call_type, \r\n" + //
-				"            customer_payment_information, insert_by, update_by, truck_id, \r\n" + //
-				"            insert_time, update_time, comment, customer_price_quote)\r\n" + //
-				"    VALUES (:customerFirstName, :customerLastName, :pickUpLocation, \r\n" + //
-				"            :dropOffLocation, :customerVehicleYear, :customerVehicleMake, \r\n" + //
-				"            :customerVehicleModel, :customerVehicleColor, :customerVehicleLiscensePlateNumber, \r\n" + //
-				"            :customerPhoneNumber, :customerVehicleKeyLocation, :customerCallType, \r\n" + //
-				"            :customerPaymentInformation , :insertBy, :updateBy, :truckId, \r\n" + //
-				"            :insertTime, :updateTime, :comment, :priceQuote)";
+				"            customer_phone_number, customer_vehicle_key_location, customer_call_type, \n" + //
+				"            customer_payment_information, insert_by, update_by, truck_id, \n" + //
+				"            insert_time, update_time, comment, customer_price_quote, tow_truck_type)\n" + //
+				"    VALUES (:customerFirstName, :customerLastName, :pickUpLocation, \n" + //
+				"            :dropOffLocation, :customerVehicleYear, :customerVehicleMake, \n" + //
+				"            :customerVehicleModel, :customerVehicleColor, :customerVehicleLiscensePlateNumber, \n" + //
+				"            :customerPhoneNumber, :customerVehicleKeyLocation, :customerCallType, \n" + //
+				"            :customerPaymentInformation , :insertBy, :updateBy, :truckId, \n" + //
+				"            :insertTime, :updateTime, :comment, :priceQuote, :towTruckType)";
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("customerFirstName", call.getCustomer().getFirstName());
@@ -87,6 +87,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("updateTime", Instant.now().getEpochSecond());
 		params.addValue("comment", call.getComment());
 		params.addValue("priceQuote", call.getCustomer().getPriceQuote());
+		params.addValue("towTruckType", call.getTowTruckType().getValue());
 
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql, params, keyHolder);
@@ -219,24 +220,25 @@ public class CallDaoServiceImpl implements CallDaoService {
 
 	@Override
 	public Call edit(Call call) {
-		String sql = "UPDATE calls set customer_first_name = :customerFirstName, \r\n" + //
-				"       customer_last_name = :customerLastName, \r\n" + //
-				"       pick_up_location = :pickUpLocation, \r\n" + //
-				"       drop_off_location =:dropOffLocation, \r\n" + //
-				"       customer_vehicle_year=:customerVehicleYear, \r\n" + //
-				"       customer_vehicle_make=:customerVehicleMake, \r\n" + //
-				"       customer_vehicle_model= :customerVehicleModel, \r\n" + //
-				"       customer_vehicle_color=:customerVehicleColor, \r\n" + //
-				"       customer_vehicle_license_plate_number=:customerVehicleLiscensePlateNumber, \r\n" + //
-				"       customer_phone_number=:customerPhoneNumber, \r\n" + //
-				"       customer_vehicle_key_location=:customerVehicleKeyLocation, \r\n" + //
-				"       customer_call_type=:customerCallType, \r\n" + //
-				"       customer_payment_information=:customerPaymentInformation, \r\n" + //
-				"       insert_by=:insertBy, \r\n" + //
-				"       update_by=:updateBy, \r\n" + //
-				"       truck_id=:truckId, \r\n" + //
-				"       comment=:comment, \r\n" + //
-				"       customer_price_quote=:customerPriceQuote, \r\n" + //
+		String sql = "UPDATE calls set customer_first_name = :customerFirstName, \n" + //
+				"       customer_last_name = :customerLastName, \n" + //
+				"       pick_up_location = :pickUpLocation, \n" + //
+				"       drop_off_location =:dropOffLocation, \n" + //
+				"       customer_vehicle_year=:customerVehicleYear, \n" + //
+				"       customer_vehicle_make=:customerVehicleMake, \n" + //
+				"       customer_vehicle_model= :customerVehicleModel, \n" + //
+				"       customer_vehicle_color=:customerVehicleColor, \n" + //
+				"       customer_vehicle_license_plate_number=:customerVehicleLiscensePlateNumber, \n" + //
+				"       customer_phone_number=:customerPhoneNumber, \n" + //
+				"       customer_vehicle_key_location=:customerVehicleKeyLocation, \n" + //
+				"       customer_call_type=:customerCallType, \n" + //
+				"       customer_payment_information=:customerPaymentInformation, \n" + //
+				"       insert_by=:insertBy, \n" + //
+				"       update_by=:updateBy, \n" + //
+				"       truck_id=:truckId, \n" + //
+				"       comment=:comment, \n" + //
+				"       customer_price_quote=:customerPriceQuote, \n" + //
+				"       tow_truck_type=:towTruckType, \n" + //
 				"       update_time=:updateTime WHERE call_id = :callId";
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
@@ -252,7 +254,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("customerPhoneNumber", call.getCustomer().getPhoneNumber());
 		params.addValue("customerVehicleKeyLocation", call.getCustomer().getVehicle().getKeyLocationType().getValue());
 		params.addValue("customerCallType", call.getCallType().getValue());
-		params.addValue("customerPaymentInformation", call.getCustomer().getVehicle().getMake());
+		params.addValue("customerPaymentInformation", call.getCustomer().getPaymentType().getValue());
 		params.addValue("insertBy", 1);
 		params.addValue("updateBy", 1);
 		params.addValue("updateTime", Instant.now().getEpochSecond());
@@ -260,7 +262,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 		params.addValue("truckId", call.getTruckId());
 		params.addValue("comment", call.getComment());
 		params.addValue("customerPriceQuote", call.getCustomer().getPriceQuote());
-
+		params.addValue("towTruckType", call.getTowTruckType().getValue());
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql, params, keyHolder);
 
