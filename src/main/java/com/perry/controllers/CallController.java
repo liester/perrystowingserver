@@ -100,6 +100,16 @@ public class CallController {
 		currentCall.setTruckId(-1);
 		callDomainService.edit(currentCall);
 	}
+	
+	@RequestMapping(value = "/{callId}/complete")
+	public void completeCall(@PathVariable long callId) {
+		Call call = callDomainService.getByIds(Arrays.asList(callId)).get(0);
+		truckDomainService.updateStatus(call.getTruckId(), "Available");
+		callDomainService.unAssignTruck(callId);
+		
+		call.setTruckId(-1);
+		callDomainService.edit(call);
+	}
 
 	@RequestMapping(value = "/nonComplete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public List<Call> getNonComplTruckActive() {
