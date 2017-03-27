@@ -101,7 +101,7 @@ public class CallController {
 		callDomainService.edit(currentCall);
 	}
 	
-	@RequestMapping(value = "/{callId}/complete")
+	@RequestMapping(value = "/{callId}/complete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
 	public void completeCall(@PathVariable long callId) {
 		Call call = callDomainService.getByIds(Arrays.asList(callId)).get(0);
 		truckDomainService.updateStatus(call.getTruckId(), "Available");
