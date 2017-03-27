@@ -273,9 +273,11 @@ public class CallDaoServiceImpl implements CallDaoService {
 
 	@Override
 	public Call getTruckActive(long truckId) {
-		String sql = "select * from calls where truck_id = :truckId";
+		Truck truck = truckDaoService.getByIds(Arrays.asList(truckId)).get(0);
+		
+		String sql = "select * from calls where call_id = :callId";
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("truckId", truckId);
+		params.addValue("callId", truck.getActiveCallId());
 		List<Call> callList = namedParameterJdbcTemplate.query(sql, params, new CallRowMapper());
 		if (!callList.isEmpty()) {
 			return callList.get(0);
