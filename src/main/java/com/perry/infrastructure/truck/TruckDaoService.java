@@ -21,7 +21,7 @@ public interface TruckDaoService {
 
 	List<Truck> getAvailable();
 
-	void removeCall(long truckId);
+	void removeCall(long callId);
 	
 	List<Truck> getByCallId(long callId);
 
