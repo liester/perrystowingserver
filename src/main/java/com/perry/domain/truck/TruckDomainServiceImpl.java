@@ -58,4 +58,9 @@ public class TruckDomainServiceImpl implements TruckDomainService {
 		truckDaoService.updateLocation(truckId, lat, lon);
 	}
 
+	@Override
+	public void deleteById(Long truckId) {
+		truckDaoService.deleteById(truckId);
+	}
+
 }

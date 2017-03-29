@@ -29,4 +29,6 @@ public interface TruckDaoService {
 
 	void updateLocation(Long truckId, String lat, String lon);
 
+	void deleteById(Long truckId);
+
 }

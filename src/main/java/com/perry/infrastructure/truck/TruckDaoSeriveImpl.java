@@ -83,15 +83,12 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		truck.setId((Long) keyHolder.getKeys().get("truck_id"));
 		return truck;
 	}
-	
+
 	@Override
 	public Truck edit(Truck truck) {
-		String sql = "update trucks set " + 
-				"driver_first_name = :driverFirstName, " + 
-				"driver_last_name = :driverLastName, " + 
-				"identifier = :identifier," +
-				"update_time = :updateTime where " + 
-				"truck_id = :truckId ";
+		String sql = "update trucks set " + "driver_first_name = :driverFirstName, "
+				+ "driver_last_name = :driverLastName, " + "identifier = :identifier,"
+				+ "update_time = :updateTime where " + "truck_id = :truckId ";
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("driverFirstName", truck.getDriverFirstName());
 		params.addValue("driverLastName", truck.getDriverLastName());
@@ -217,6 +214,23 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 		params.addValue("updateTime", Instant.now().getEpochSecond());
 		String sql = "update trucks set gis_latitude = :lat, gis_longitude = :lon, update_time = :updateTime where truck_id = :truckId";
 		namedParameterJdbcTemplate.update(sql, params);
+	}
+
+	@Override
+	public void deleteById(Long truckId) {
+		// First set all calls associated with truck back to 'truck_id' 0 (not
+		// assigned)
+		Truck truck = getById(truckId);
+		if (truck.getActiveCallId() != 0) {
+			callDaoService.unAssignTruck(truck.getActiveCallId());
+		}
+		if (truck.getQueuedCallId() != 0) {
+			callDaoService.unAssignTruck(truck.getQueuedCallId());
+		}
+		MapSqlParameterSource truckParams = new MapSqlParameterSource();
+		truckParams.addValue("truckId", truckId);
+		String truckSql = "delete from trucks where truck_id = :truckId";
+		namedParameterJdbcTemplate.update(truckSql, truckParams);
 	}
 
 }

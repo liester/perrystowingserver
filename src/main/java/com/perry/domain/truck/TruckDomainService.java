@@ -18,4 +18,6 @@ public interface TruckDomainService {
 	
 	Truck edit(Truck truck);
 
+	void deleteById(Long truckId);
+
 }

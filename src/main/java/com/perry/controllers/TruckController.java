@@ -39,6 +39,11 @@ public class TruckController {
 		return createdTruck;
 	}
 	
+	@RequestMapping(value = "/delete/{truckId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
+	public void deleteTruck( @PathVariable Long truckId) {
+		truckDomainService.deleteById(truckId);
+	}
+	
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON)
 	public Truck editTruck(@RequestBody Truck truck) {
 		Truck createdTruck = truckDomainService.edit(truck);
