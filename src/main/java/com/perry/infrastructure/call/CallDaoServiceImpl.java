@@ -211,7 +211,7 @@ public class CallDaoServiceImpl implements CallDaoService {
 	public void delete(long callId) {
 		// First remove the call from any active trucks and update the trucks
 		// calls
-		truckDaoService.removeCall(callId);
+		unAssignTruck(callId);
 
 		// Now delete the call
 		String sql = "delete from calls where call_id = :callId";
