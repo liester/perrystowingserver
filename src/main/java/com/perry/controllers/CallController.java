@@ -1,11 +1,17 @@
 package com.perry.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -105,4 +111,48 @@ public class CallController {
 	public List<Call> getNonComplTruckActive() {
 		return callDomainService.getAllNonCompleteCalls();
 	}
+	
+	@RequestMapping(value = "/download", method = RequestMethod.GET)
+	public void downloadCalls(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		ServletContext context = request.getServletContext();
+		
+		File calls = callDomainService.createCallBackupFile();
+		String mimeType = context.getMimeType(calls.getAbsolutePath());
+		if(mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		response.setContentLength((int) calls.length());
+		response.setHeader("Content-Disposition", "attachment; filename=\""+calls.getName() + "\"");
+		Files.copy(calls.toPath(), response.getOutputStream());
+		
+		calls.delete();
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

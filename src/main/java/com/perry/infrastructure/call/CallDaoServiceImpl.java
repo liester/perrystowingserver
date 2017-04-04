@@ -299,5 +299,12 @@ public class CallDaoServiceImpl implements CallDaoService {
 		}
 		return dropOffLocationMap;
 	}
+	
+	@Override
+	public List<Call> getCompletedCalls() {
+		String sql = "select * from calls where truck_id = -1 order by insert_time asc";
+		
+		return namedParameterJdbcTemplate.query(sql, new CallRowMapper());
+	}
 
 }

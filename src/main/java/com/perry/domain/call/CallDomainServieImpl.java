@@ -1,5 +1,10 @@
 package com.perry.domain.call;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -73,4 +78,54 @@ public class CallDomainServieImpl implements CallDomainService {
 		return nonCompleteCalls;
 	}
 
+	@Override
+	public File createCallBackupFile() throws IOException {
+		List<Call> completedCalls = callDaoService.getCompletedCalls();
+		File tempBackup = File.createTempFile("backup", ".csv");
+		
+		FileOutputStream fos = new FileOutputStream(tempBackup);
+		OutputStreamWriter osw = new OutputStreamWriter(fos);
+		BufferedWriter bw = new BufferedWriter(osw);
+		for(Call call : completedCalls) {
+			bw.write(writeCallAsString(call));
+			bw.newLine();
+		}
+		bw.close();
+		osw.close();
+		fos.close();
+		
+		//TODO - Delete calls
+		
+		return tempBackup;
+	}
+	
+	private String writeCallAsString(Call call) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("\"").append(call.getCustomer().getFirstName()).append("\",");
+		sb.append("\"").append(call.getCustomer().getLastName()).append("\",");
+		sb.append("\"").append(call.getCustomer().getPhoneNumber()).append("\",");
+		sb.append("\"").append(call.getCustomer().getPriceQuote()).append("\",");
+		sb.append("\"").append(call.getCustomer().getPaymentType() != null ? call.getCustomer().getPaymentType().getValue() : " ").append("\",");
+		if(call.getCustomer().getVehicle() != null) {
+			sb.append("\"").append(call.getCustomer().getVehicle().getYear()).append("\",");
+			sb.append("\"").append(call.getCustomer().getVehicle().getMake()).append("\",");
+			sb.append("\"").append(call.getCustomer().getVehicle().getModel()).append("\",");
+			sb.append("\"").append(call.getCustomer().getVehicle().getColor()).append("\",");
+			sb.append("\"").append(call.getCustomer().getVehicle().getLicensePlateNumber()).append("\",");
+			sb.append("\"").append(call.getCustomer().getVehicle().getKeyLocationType() != null ? call.getCustomer().getVehicle().getKeyLocationType().getValue() : " ").append("\",");
+		} else {
+			sb.append("\"\" ,");
+			sb.append("\"\" ,");
+			sb.append("\"\" ,");
+			sb.append("\"\" ,");
+			sb.append("\"\" ,");
+			sb.append("\"\" ,");
+		}
+		sb.append("\"").append(call.getPickUpLocation()).append("\",");
+		sb.append("\"").append(call.getDropOffLocation()).append("\",");
+		sb.append("\"").append(call.getCallType() != null ? call.getCallType().getValue() : " ").append("\",");
+		sb.append("\"").append(call.getTowTruckType() != null ? call.getTowTruckType().getValue() : " ").append("\",");
+		sb.append("\"").append(call.getComment()).append("\",");
+		return sb.toString();
+	}
 }
