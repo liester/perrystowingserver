@@ -9,8 +9,8 @@ import com.perry.domain.ClientId;
 import com.perry.infrastructure.client.ClientIdDaoService;
 
 @Named
-public class ClientIdDomainServiceImpl implements ClientIdDomainService{
-	
+public class ClientIdDomainServiceImpl implements ClientIdDomainService {
+
 	@Inject
 	private ClientIdDaoService clientIdDaoService;
 
@@ -18,6 +18,12 @@ public class ClientIdDomainServiceImpl implements ClientIdDomainService{
 	public List<ClientId> getAll() {
 		List<ClientId> clientIds = clientIdDaoService.getAll();
 		return clientIds;
+	}
+
+	@Override
+	public List<ClientId> updateAll(List<ClientId> clientIds) {
+		List<ClientId> clientIdReturnList = clientIdDaoService.updateAll(clientIds);
+		return clientIdReturnList;
 	}
 
 }

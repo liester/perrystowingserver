@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.perry.domain.ClientId;
@@ -24,4 +25,19 @@ public class ClientIdDaoServiceImpl implements ClientIdDaoService {
 		return clientIds;
 	}
 
+	@Override
+	public List<ClientId> updateAll(List<ClientId> clientIds) {
+		for (ClientId clientId : clientIds) {
+			MapSqlParameterSource params = new MapSqlParameterSource();
+			params.addValue("clientId", clientId.getClientId());
+			params.addValue("role", clientId.getRole());
+			String sql = "update clients set role = :role where client_id = :clientId";
+			namedParameterJdbcTemplate.update(sql, params);
+		}
+		List<ClientId> clientIdReturnList = getAll();
+		return clientIdReturnList;
+	}
+
+	
+	
 }
