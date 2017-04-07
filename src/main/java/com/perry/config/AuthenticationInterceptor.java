@@ -31,7 +31,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 			boolean isValidClient = authenticationDomainService.isValidClient(clientId);
 			return isValidClient;
 		}
-		return true;
+		return false;
 	}
 
 	private String getCookieValueByName(String name, Cookie[] cookies) {
