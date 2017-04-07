@@ -41,4 +41,25 @@ public class ClientId {
 		this.role = role;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+
+		if (o == this)
+			return true;
+		if (!(o instanceof ClientId)) {
+			return false;
+		}
+
+		ClientId clientId = (ClientId) o;
+
+		return clientId.getClientId().equals(this.getClientId()) && clientId.getRole() == this.getRole();
+	}
+
+	// Idea from effective Java : Item 9
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 31 * result + clientId.hashCode();
+		return result;
+	}
 }
