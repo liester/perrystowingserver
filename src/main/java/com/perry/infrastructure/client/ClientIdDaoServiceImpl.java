@@ -38,6 +38,12 @@ public class ClientIdDaoServiceImpl implements ClientIdDaoService {
 		return clientIdReturnList;
 	}
 
-	
-	
+	@Override
+	public void deleteById(long id) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("id", id);
+		String sql = "delete * from clients where id = :id";
+		namedParameterJdbcTemplate.update(sql, params);
+	}
+
 }

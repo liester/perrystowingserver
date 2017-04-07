@@ -26,7 +26,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 		if (request.getMethod().equals("OPTIONS")) {
 			return true;
 		}
-		String clientId = getCookieValueByName("clientId", request.getCookies());
+		String clientId = request.getHeader("Client-Id");
 		if (clientId != null) {
 			boolean isValidClient = authenticationDomainService.isValidClient(clientId);
 			return isValidClient;

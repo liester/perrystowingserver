@@ -26,4 +26,9 @@ public class ClientIdDomainServiceImpl implements ClientIdDomainService {
 		return clientIdReturnList;
 	}
 
+	@Override
+	public void deleteById(long id) {
+		clientIdDaoService.deleteById(id);
+	}
+
 }
