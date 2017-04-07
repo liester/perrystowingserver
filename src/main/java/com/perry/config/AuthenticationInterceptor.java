@@ -27,7 +27,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		}
 		String clientId = request.getHeader("Client-Id");
-		if (clientId != null) {
+		if (clientId != null && !clientId.isEmpty()) {
 			boolean isValidClient = authenticationDomainService.isValidClient(clientId);
 			return isValidClient;
 		}
