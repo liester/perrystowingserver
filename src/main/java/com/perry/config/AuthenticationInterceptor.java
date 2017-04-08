@@ -32,6 +32,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 			boolean isValidClient = authenticationDomainService.isValidClient(clientId);
 			return isValidClient;
 		}
+		// JOE - change this to return false to turn on client authentication
 		return true;
 	}
 
