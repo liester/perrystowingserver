@@ -27,6 +27,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		}
 		String clientId = request.getHeader("Client-Id");
+		logger.info("Client-ID: " + clientId + " for endpoint:" + request.getRequestURL());
 		if (clientId != null && !clientId.isEmpty()) {
 			boolean isValidClient = authenticationDomainService.isValidClient(clientId);
 			return isValidClient;
@@ -35,17 +36,17 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 	}
 
 	private String getCookieValueByName(String name, Cookie[] cookies) {
-		if(cookies == null){
+		if (cookies == null) {
 			logger.info("No Cookies Available.");
 			return null;
 		}
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(name)) {
-				logger.info("Found ClientId: "+cookie.getValue());
+				logger.info("Found ClientId: " + cookie.getValue());
 				return cookie.getValue();
 			}
 		}
-		logger.info("No ClientId found.");
+		logger.info("Cookie: " + name + "-not found.");
 		return null;
 
 	}
