@@ -31,4 +31,10 @@ public class ClientIdDomainServiceImpl implements ClientIdDomainService {
 		clientIdDaoService.deleteById(id);
 	}
 
+	@Override
+	public ClientId getByClientId(String clientId) {
+		ClientId clientIdToReturn = clientIdDaoService.getByClientId(clientId);
+		return clientIdToReturn;
+	}
+
 }

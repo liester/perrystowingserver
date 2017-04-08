@@ -11,4 +11,6 @@ public interface ClientIdDaoService {
 	public List<ClientId> updateAll(List<ClientId> clientIds);
 
 	public void deleteById(long id);
+	
+	public ClientId getByClientId(String clientId);
 }
