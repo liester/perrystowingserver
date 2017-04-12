@@ -183,6 +183,11 @@ public class CallDaoServiceImpl implements CallDaoService {
 
 		// Update truck
 		Truck truck = truckDaoService.getById(call.getTruckId());
+		// If no truck assigned, return
+		if (truck == null) {
+			return;
+		}
+
 		// If call is active call, make queued call active
 		if (truck.getActiveCallId() == callId && truck.getQueuedCallId() > 0) {
 			MapSqlParameterSource queuedCallParams = new MapSqlParameterSource();
@@ -299,11 +304,11 @@ public class CallDaoServiceImpl implements CallDaoService {
 		}
 		return dropOffLocationMap;
 	}
-	
+
 	@Override
 	public List<Call> getCompletedCalls() {
 		String sql = "select * from calls where truck_id = -1 order by insert_time asc";
-		
+
 		return namedParameterJdbcTemplate.query(sql, new CallRowMapper());
 	}
 

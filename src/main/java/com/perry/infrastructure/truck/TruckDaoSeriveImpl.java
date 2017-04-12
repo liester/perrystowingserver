@@ -59,6 +59,9 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 	@Override
 	public Truck getById(long truckId) {
 		List<Truck> truckList = getByIds(Arrays.asList(truckId));
+		if (truckList.isEmpty()) {
+			return null;
+		}
 		return truckList.get(0);
 	}
 
