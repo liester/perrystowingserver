@@ -94,7 +94,9 @@ public class CallDomainServieImpl implements CallDomainService {
 		osw.close();
 		fos.close();
 		
-		//TODO - Delete calls
+		for(Call call : completedCalls) {
+			callDaoService.delete(call.getId());
+		}
 		
 		return tempBackup;
 	}
