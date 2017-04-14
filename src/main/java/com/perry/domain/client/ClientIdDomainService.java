@@ -10,6 +10,8 @@ public interface ClientIdDomainService {
 
 	public List<ClientId> updateAll(List<ClientId> clientIds);
 	
-	public void deleteById(long clientId);
+	public void deleteById(long id);
+	
+	public ClientId getByClientId(String clientId);
 
 }

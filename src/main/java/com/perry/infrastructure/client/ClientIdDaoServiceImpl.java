@@ -64,4 +64,13 @@ public class ClientIdDaoServiceImpl implements ClientIdDaoService {
 		namedParameterJdbcTemplate.update(sql, params);
 	}
 
+	@Override
+	public ClientId getByClientId(String clientId) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("clientId", clientId);
+		String sql = "select * from clients where client_id = :clientId";
+		List<ClientId> clientIdList = namedParameterJdbcTemplate.query(sql, params, new ClientIdRowMapper());
+		return clientIdList.get(0);
+	}
+
 }

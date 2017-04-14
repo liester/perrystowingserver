@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class ClientController {
 	private ClientIdDomainService clientIdDomainService;
 
 	@RequestMapping("")
-	public ResponseEntity<List<ClientId>> getAllClientIds() throws IOException {
+	public ResponseEntity<List<ClientId>> getAllClientIds(HttpServletRequest request) throws IOException {
 		List<ClientId> clientIds = clientIdDomainService.getAll();
 		return new ResponseEntity<List<ClientId>>(clientIds, HttpStatus.OK);
 	};

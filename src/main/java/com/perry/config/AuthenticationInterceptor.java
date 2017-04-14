@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.perry.domain.ClientId;
 import com.perry.domain.authentication.AuthenticationDomainServiceImpl;
+import com.perry.domain.client.ClientIdDomainService;
 
 @Named
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
@@ -20,6 +22,9 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 	@Inject
 	private AuthenticationDomainServiceImpl authenticationDomainService;
 
+	@Inject
+	private ClientIdDomainService clientIdDomainService;
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -27,25 +32,38 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		}
 		String clientId = request.getHeader("Client-Id");
+
+		logger.info("Client-ID: " + clientId + " for endpoint:" + request.getRequestURL());
 		if (clientId != null && !clientId.isEmpty()) {
 			boolean isValidClient = authenticationDomainService.isValidClient(clientId);
+			validateRoleAndUrl(request);
 			return isValidClient;
 		}
+		// JOE - change this to return false to turn on client authentication
 		return true;
 	}
 
+	private void validateRoleAndUrl(HttpServletRequest request) {
+		String clientId = request.getHeader("Client-Id");
+		ClientId fullClientId = clientIdDomainService.getByClientId(clientId);
+		if (fullClientId.getRole() != 1 && request.getRequestURI().startsWith("/clients")) {
+			throw new RuntimeException("You do not have access to see client Ids");
+		}
+
+	}
+
 	private String getCookieValueByName(String name, Cookie[] cookies) {
-		if(cookies == null){
+		if (cookies == null) {
 			logger.info("No Cookies Available.");
 			return null;
 		}
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(name)) {
-				logger.info("Found ClientId: "+cookie.getValue());
+				logger.info("Found ClientId: " + cookie.getValue());
 				return cookie.getValue();
 			}
 		}
-		logger.info("No ClientId found.");
+		logger.info("Cookie: " + name + "-not found.");
 		return null;
 
 	}
