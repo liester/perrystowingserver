@@ -76,9 +76,9 @@ public class TruckController {
 		return ids;
 	}
 	
-	@RequestMapping(value = "/location/{truckId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
-	public void updateTruckLocation(@PathVariable Long truckId,@RequestParam String latitude,@RequestParam String longitude) {
-		truckDomainService.updateLocation(truckId, latitude, longitude);
+	@RequestMapping(value = "/location/{identifier}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	public void updateTruckLocation(@PathVariable String identifier,@RequestParam String latitude,@RequestParam String longitude) {
+		truckDomainService.updateLocation(identifier, latitude, longitude);
 	}
 
 }

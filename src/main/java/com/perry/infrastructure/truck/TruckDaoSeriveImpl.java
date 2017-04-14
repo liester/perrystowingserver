@@ -209,13 +209,13 @@ public class TruckDaoSeriveImpl implements TruckDaoService {
 	}
 
 	@Override
-	public void updateLocation(Long truckId, String lat, String lon) {
+	public void updateLocation(String identifier, String lat, String lon) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("truckId", truckId);
+		params.addValue("identifier", identifier);
 		params.addValue("lat", lat);
 		params.addValue("lon", lon);
 		params.addValue("updateTime", Instant.now().getEpochSecond());
-		String sql = "update trucks set gis_latitude = :lat, gis_longitude = :lon, update_time = :updateTime where truck_id = :truckId";
+		String sql = "update trucks set gis_latitude = :lat, gis_longitude = :lon, update_time = :updateTime where identifier = :identifier";
 		namedParameterJdbcTemplate.update(sql, params);
 	}
 

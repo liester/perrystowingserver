@@ -14,7 +14,7 @@ public interface TruckDomainService {
 
 	Truck updateStatus(Long truckId, String status);
 
-	void updateLocation(Long truckId, String lat, String lon);
+	void updateLocation(String identifier, String lat, String lon);
 	
 	Truck edit(Truck truck);
 

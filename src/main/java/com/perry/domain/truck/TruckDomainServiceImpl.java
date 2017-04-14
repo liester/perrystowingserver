@@ -54,8 +54,8 @@ public class TruckDomainServiceImpl implements TruckDomainService {
 	}
 	
 	@Override
-	public void updateLocation(Long truckId, String lat, String lon) {
-		truckDaoService.updateLocation(truckId, lat, lon);
+	public void updateLocation(String identifier, String lat, String lon) {
+		truckDaoService.updateLocation(identifier, lat, lon);
 	}
 
 	@Override
