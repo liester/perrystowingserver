@@ -45,6 +45,9 @@ public class CallDaoServiceImpl implements CallDaoService {
 	@Override
 	public Call getById(long id) {
 		List<Call> callList = getByIds(Arrays.asList(id));
+		if(callList.isEmpty()){
+			return null;
+		}
 		Call call = callList.get(0);
 		return call;
 	}
@@ -175,6 +178,9 @@ public class CallDaoServiceImpl implements CallDaoService {
 	public void unAssignTruck(long callId) {
 		// First update call to no longer be assigned.
 		Call call = getById(callId);
+		if (call == null) {
+			return;
+		}
 
 		MapSqlParameterSource callParams = new MapSqlParameterSource();
 		callParams.addValue("callId", callId);
