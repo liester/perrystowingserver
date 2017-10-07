@@ -1,0 +1,164 @@
+-- Sequence: public.calls_call_id_seq
+
+-- DROP SEQUENCE public.calls_call_id_seq;
+
+CREATE SEQUENCE public.calls_call_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1521
+  CACHE 1;
+ALTER TABLE public.calls_call_id_seq
+  OWNER TO ynwjtfjcejchgm;
+
+
+
+
+
+
+
+-- Sequence: public.clients_client_id_seq
+
+-- DROP SEQUENCE public.clients_client_id_seq;
+
+CREATE SEQUENCE public.clients_client_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 15
+  CACHE 1;
+ALTER TABLE public.clients_client_id_seq
+  OWNER TO ynwjtfjcejchgm;
+
+
+
+
+-- Sequence: public.trucks_truck_id_seq
+
+-- DROP SEQUENCE public.trucks_truck_id_seq;
+
+CREATE SEQUENCE public.trucks_truck_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 45
+  CACHE 1;
+ALTER TABLE public.trucks_truck_id_seq
+  OWNER TO ynwjtfjcejchgm;
+
+
+
+
+-- Table: public.calls
+
+-- DROP TABLE public.calls;
+
+CREATE TABLE public.calls
+(
+  call_id bigint NOT NULL DEFAULT nextval('calls_call_id_seq'::regclass),
+  customer_first_name character varying(20) NOT NULL,
+  customer_last_name character varying(20) NOT NULL,
+  pick_up_location character varying(100),
+  drop_off_location character varying(100),
+  customer_vehicle_year character varying(5),
+  customer_vehicle_make character varying(15),
+  customer_vehicle_model character varying(15),
+  customer_vehicle_color character varying(15),
+  customer_vehicle_license_plate_number character varying(15),
+  customer_phone_number character varying(20),
+  customer_vehicle_key_location character varying(30),
+  customer_call_type character varying(30),
+  customer_payment_information character varying(30),
+  status character varying(30) DEFAULT 'available'::character varying,
+  insert_by integer DEFAULT 0, -- Reverted to original properties
+  update_by integer DEFAULT 0,
+  truck_id bigint, -- This is the currently assigned truck for this particular 'call job'
+  insert_time bigint NOT NULL, -- Epoch time of record insert
+  update_time bigint NOT NULL, -- new column to hold update time.  if this time is the same as insert_time the record has never been updated.
+  customer_price_quote character(15), -- Price quote given to customer at time of call
+  comment character(500), -- Dispatcher Comments
+  tow_truck_type character(30), -- Holds the Type of tow truck needed for a specific call.
+  CONSTRAINT calls_pkey PRIMARY KEY (call_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.calls
+  OWNER TO ynwjtfjcejchgm;
+COMMENT ON COLUMN public.calls.insert_by IS 'Reverted to original properties';
+COMMENT ON COLUMN public.calls.truck_id IS 'This is the currently assigned truck for this particular ''call job''';
+COMMENT ON COLUMN public.calls.insert_time IS 'Epoch time of record insert';
+COMMENT ON COLUMN public.calls.update_time IS 'new column to hold update time.  if this time is the same as insert_time the record has never been updated.';
+COMMENT ON COLUMN public.calls.customer_price_quote IS 'Price quote given to customer at time of call';
+COMMENT ON COLUMN public.calls.comment IS 'Dispatcher Comments';
+COMMENT ON COLUMN public.calls.tow_truck_type IS 'Holds the Type of tow truck needed for a specific call.';
+
+
+
+
+
+
+
+
+
+-- Table: public.clients
+
+-- DROP TABLE public.clients;
+
+CREATE TABLE public.clients
+(
+  id bigint NOT NULL DEFAULT nextval('clients_client_id_seq'::regclass),
+  client_id character varying(20) NOT NULL,
+  role integer, -- Determines what type of role a client id has.
+  CONSTRAINT clients_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.clients
+  OWNER TO ynwjtfjcejchgm;
+COMMENT ON COLUMN public.clients.role IS 'Determines what type of role a client id has.';
+
+
+
+
+
+
+
+
+-- Table: public.trucks
+
+-- DROP TABLE public.trucks;
+
+CREATE TABLE public.trucks
+(
+  truck_id bigint NOT NULL DEFAULT nextval('trucks_truck_id_seq'::regclass),
+  driver_first_name character varying(20) NOT NULL,
+  driver_last_name character varying(20) NOT NULL,
+  status character varying(30) DEFAULT 'Available'::character varying,
+  insert_time bigint NOT NULL,
+  update_time bigint NOT NULL,
+  insert_by integer DEFAULT 0, -- Update to default to 0.  0 means no one
+  update_by integer DEFAULT 0, -- update default to be 0.  0 means no one.
+  identifier character(30), -- This is how a business person would identify a truck.  It could be something as simple a 1, 2, 3 or as elaborate as VIN
+  gis_latitude character(30), -- GIS lattitude coordinate
+  gis_longitude character(30), -- GIS longitude coordinate
+  active_call_id bigint DEFAULT 0, -- The call the truck is currently assigned to/highest priority
+  queued_call_id bigint DEFAULT 0, -- This is the queued call.  It is the call that the driver will start once they complete their active call.
+  CONSTRAINT trucks_pkey PRIMARY KEY (truck_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.trucks
+  OWNER TO ynwjtfjcejchgm;
+COMMENT ON COLUMN public.trucks.insert_by IS 'Update to default to 0.  0 means no one';
+COMMENT ON COLUMN public.trucks.update_by IS 'update default to be 0.  0 means no one.';
+COMMENT ON COLUMN public.trucks.identifier IS 'This is how a business person would identify a truck.  It could be something as simple a 1, 2, 3 or as elaborate as VIN';
+COMMENT ON COLUMN public.trucks.gis_latitude IS 'GIS lattitude coordinate';
+COMMENT ON COLUMN public.trucks.gis_longitude IS 'GIS longitude coordinate';
+COMMENT ON COLUMN public.trucks.active_call_id IS 'The call the truck is currently assigned to/highest priority';
+COMMENT ON COLUMN public.trucks.queued_call_id IS 'This is the queued call.  It is the call that the driver will start once they complete their active call.';
+
+
+
